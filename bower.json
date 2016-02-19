@@ -27,6 +27,8 @@
   },
   "devDependencies": {
     "web-component-tester": "*",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.1"
+    
   }
 }

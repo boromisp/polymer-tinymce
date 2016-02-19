@@ -2,6 +2,27 @@
 
 A tinymce HTML Editor as an Polymer Element.
 
+# Fork notes
+
+The fork makes it easier to work with events (change), and supports multiple
+instances of the editor on the same page.
+
+## Supported events:
+
+* init
+* focus
+* change
+
+( fixed events 'this' scope )
+
+## change event:
+
+change event receives the new html content ( see demo page for example )
+
+## Support for multiple instances
+
+Each text area will have a unique id, to avoid conflicts with other instances
+
 ```
 <polymer-tinymce id="editor"
 	  	tinytoolbar="insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image" 

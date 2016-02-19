@@ -5,7 +5,7 @@
 <dom-module id="polymer-tinymce">
 
   <template>
-    <textarea id="polymerTinymceTextarea" name="content" style="width:100%" class="te"></textarea>
+    <textarea id="{{textareaid}}" name="content" style="width:100%" class="te"></textarea>
   </template>
 
 </dom-module>
@@ -17,6 +17,21 @@
     is: 'polymer-tinymce',
 
     properties:{
+
+      textareaid: {
+        type: String,
+        value: function() {
+          //Store a counter so each tinymce editor has a different id to avoid conflicts
+          tinymce.instanceNumber =  tinymce.instanceNumber || 1;
+          tinymce.instanceNumber++;
+          return "polymerTinymceTextarea" + tinymce.instanceNumber;
+        }
+      },
+      //Used to get a reference to the tinymce editor
+      editorid: {
+        type: String,
+        value: ''
+      },
 
       // "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
       
@@ -69,43 +84,42 @@
       }
       
       tinymce.init({
-        selector: "#polymerTinymceTextarea",
+        selector: "#" + this.textareaid,
         templates: this.templates,
         plugins: this.tinyplugins,
         toolbar: this.tinytoolbar,
         height: this.height,
         setup: function (ed) {
-              ed.on('init', function(args) {
+          this.editorid = ed.id;
+          ed.on('init', function(args) {
+            this.fire('init');
+          }.bind(this));
 
-                this.fire('tiny-init');
-                  
-              });
+          ed.on('focus', function(e) {
+              this.fire('focus');
+          }.bind(this));
 
-              ed.on('focus', function(e) {
-
-                  this.fire('tiny-focus');
-
-              });
-
-              ed.on('NodeChange', function(e) {
-                  this.fire('tiny-node');
-
-              });
-          }
+          ed.on('NodeChange keyup', function(e) {
+              var content = tinyMCE.get(ed.id).getContent();
+              this.fire('change', content);
+          }.bind(this));
+        }.bind(this)
       });
     },
 
     execCommand:function(command){
-      tinyMCE.activeEditor.execCommand(command);
+      tinyMCE.getEditor().execCommand(command);
     },
-
+    getEditor: function() {
+      return tinyMCE.editors[this.editorid];
+    },
     getContent:function(){
-      return tinyMCE.activeEditor.getContent();
+      return this.getEditor().getContent();
     },
 
     setContent:function(content){
-      if (tinyMCE && tinyMCE.activeEditor){
-        tinyMCE.activeEditor.setContent(content);
+      if (tinyMCE && this.getEditor()){
+        this.getEditor().setContent(content);
       }
       
     }

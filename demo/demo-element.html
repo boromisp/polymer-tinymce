@@ -30,6 +30,12 @@
 
         setContent:function(){
         	this.$.editor.setContent(this.$.contentInput.value);
+        },
+
+        ready: function() {
+          this.$.editor.addEventListener('change', function(ev) {
+            console.log('Editor content changed', ev.detail);
+          })
         }
 
       });
