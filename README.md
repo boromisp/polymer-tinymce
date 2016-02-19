@@ -50,4 +50,16 @@ Get and set content:
 </script>
 ```
 
+## Test environment
+
+Install polyserve
+
+    npm install -g polyserve
+
+And run polyserve on the main directory. Then go to
+
+[http://localhost:8080/components/polymer-tinymce/demo/index.html](http://localhost:8080/components/polymer-tinymce/demo/index.html)
+
+To test the component
+
 ![Demo Pic](http://www.synappses.com/wp-content/uploads/2015/06/tinymceDemo.png "Polymer-Tinymce")
