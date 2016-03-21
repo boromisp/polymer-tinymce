@@ -63,6 +63,11 @@
       baseUrl: {
         type: String,
         value: ''
+      },
+      //Set to the url of the custom css file (for the body of the editor iframe)
+      contentcss: {
+        type: String,
+        value:''
       }
       
     },
@@ -89,6 +94,7 @@
         plugins: this.tinyplugins,
         toolbar: this.tinytoolbar,
         height: this.height,
+        content_css: this.contentcss,
         setup: function (ed) {
           this.editorid = ed.id;
           ed.on('init', function(args) {
