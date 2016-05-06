@@ -11,16 +11,15 @@ instances of the editor on the same page.
 
 ```js
    customButtons: {
-		 type: Object,
-		 value: {
-		     'someButton': {
-			 'text':'Some custom button here',
-			 'onclick': function(ev) {
-			     alert('custom action');
-			 }
-		     }
-		 }
-	     }
+      type: Object,
+      value: {
+       'someButton': {
+       'text':'Some custom button here',
+       'onclick': function(ev) {
+          alert('custom action');
+       }
+      }
+   }
 ```
 
 ## Supported events:
