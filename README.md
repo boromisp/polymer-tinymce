@@ -9,6 +9,12 @@ instances of the editor on the same page.
 
 ## Add custom buttons easily:
 
+E.g Bind the "buttons" property to some property in your parent element
+
+```html
+	<polymer-tinymce buttons="{{customButtons}}">...
+```
+
 ```js
    customButtons: {
       type: Object,
