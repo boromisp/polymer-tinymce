@@ -7,6 +7,22 @@ A tinymce HTML Editor as an Polymer Element.
 The fork makes it easier to work with events (change), and supports multiple
 instances of the editor on the same page.
 
+## Add custom buttons easily:
+
+```js
+   customButtons: {
+		 type: Object,
+		 value: {
+		     'someButton': {
+			 'text':'Some custom button here',
+			 'onclick': function(ev) {
+			     alert('custom action');
+			 }
+		     }
+		 }
+	     }
+```
+
 ## Supported events:
 
 * init
