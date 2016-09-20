@@ -23,7 +23,8 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.0.0",
-    "import-tinymce": "*"
+    "import-tinymce": "*",
+    "tinymce": "^4.4.3"
   },
   "devDependencies": {
     "web-component-tester": "*",

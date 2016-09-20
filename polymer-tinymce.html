@@ -3,178 +3,186 @@
 <link rel="import" href="../import-tinymce/import-tinymce.html">
 
 <dom-module id="polymer-tinymce">
-
-    <template>
-	<textarea id="{{textareaid}}" name="content" style="width:100%" class="te"></textarea>
-    </template>
-
+  <template>
+    <textarea id="{{textareaid}}" name="content" style="width:100%" class="te"></textarea>
+  </template>
 </dom-module>
 
 <script>
+(function () {
+  'use strict';
 
- Polymer({
+  Polymer({
+    is: 'polymer-tinymce',
 
-     is: 'polymer-tinymce',
+    properties:{
 
-     properties:{
+      textareaid: {
+        type: String,
+        value: function() {
+          //Store a counter so each tinymce editor has a different id to avoid conflicts
+          tinyMCE.instanceNumber =  tinyMCE.instanceNumber || 1;
+          tinyMCE.instanceNumber++;
+          return 'polymerTinymceTextarea' + tinyMCE.instanceNumber;
+        }
+      },
+      
+      //Used to get a reference to the tinymce editor
+      editorid: {
+        type: String,
+        value: ''
+      },
 
-	 textareaid: {
-             type: String,
-             value: function() {
-		 //Store a counter so each tinymce editor has a different id to avoid conflicts
-		 tinymce.instanceNumber =  tinymce.instanceNumber || 1;
-		 tinymce.instanceNumber++;
-		 return "polymerTinymceTextarea" + tinymce.instanceNumber;
-             }
-	 },
-	 //Used to get a reference to the tinymce editor
-	 editorid: {
-             type: String,
-             value: ''
-	 },
+      // "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+      tinytoolbar:{
+        type:String,
+        value: 'undo | bullist'
+      },
 
-	 // "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-	 
-	 tinytoolbar:{
-             type:String,
-             value:"undo | bullist"
-	 },
-	 toolbarPlusButtons: {
-	     type: String,
-	     computed: "_getToolbarOptionsWithButtons(tinytoolbar, buttons)"
-	 },
+      toolbarPlusButtons: {
+        type: String,
+        computed: '_getToolbarOptionsWithButtons(tinytoolbar, buttons)'
+      },
 
-	 // ["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]
+      // ["advlist autolink lists link image charmap print preview anchor","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"]
+      tinyplugins:{
+        type:Array,
+        value:['advlist autolink lists link image charmap preview anchor fullscreen']
+      },
 
-	 tinyplugins:{
-             type:Array,
-             value:["advlist autolink lists link image charmap preview anchor fullscreen"]
-	 },
+      /* Html or an url that can be loaded from the editor. */
+      // [{title: 'Some title 1', description: 'Some desc 1', content: 'My content'}, 
+      // {title: 'Some title 2', description: 'Some desc 2', url: 'development.html'}]
+      templates: {
+        type: Array,
+        value: function () { return []; }
+      },
 
-	 /* Html or an url that can be loaded from the editor. */
-	 // [{title: 'Some title 1', description: 'Some desc 1', content: 'My content'}, 
-	 // {title: 'Some title 2', description: 'Some desc 2', url: 'development.html'}]
-	 templates: {
-             type: Array,
-             value: function () { return [] }
-	 },
+      height: {
+        type: Number,
+        value: 168
+      },
 
-	 height: {
-             type: Number,
-             value: 168
-	 },
+      baseUrl: {
+        type: String,
+        value: ''
+      },
 
-	 baseUrl: {
-             type: String,
-             value: ''
-	 },
-	 //Set to the url of the custom css file (for the body of the editor iframe)
-	 contentcss: {
-             type: String,
-             value:''
-	 },
-	 /* dictionary of button options that can be used to add toolbar buttons,
-	    the key is the identifier of the button, and the value is an object like
-	    {
-	    text: 'My button',
-	    icon: false,
-	    onclick: function () {
-            editor.insertContent('&nbsp;<b>It\'s my button!</b>&nbsp;');
-	    }
+      //Set to the url of the custom css file (for the body of the editor iframe)
+      contentcss: {
+        type: String,
+        value:''
+      },
 
-	    see https://www.tinymce.com/docs/demo/custom-toolbar-button/
-	    for an example
-	  */
-	 buttons: {
-	     type: Object,
-	     value: function() {
+      /* dictionary of button options that can be used to add toolbar buttons,
+        the key is the identifier of the button, and the value is an object like
+        {
+        text: 'My button',
+        icon: false,
+        onclick: function () {
+              editor.insertContent('&nbsp;<b>It\'s my button!</b>&nbsp;');
+        }
 
-		 return {}
-	     }
-	 }
-	 
-     },
+        see https://www.tinymce.com/docs/demo/custom-toolbar-button/
+        for an example
+      */
+      buttons: {
+        type: Object,
+        value: function() { return {}; }
+      },
 
-     /* Adds the buttons as toolbar options in addition to the set toolbar buttons ,
-      the toolbar format is |option1 option2 | othergroupoption1 othergroupoption2 |*/
-     _getToolbarOptionsWithButtons: function(toolbar, buttons) {
-	 var btnKeys = Object.keys(buttons);
-	 toolbar+=" |"
-	 btnKeys.forEach(function(key){
+      initOptions: {
+        type: Object,
+        value: null
+      }
+    },
 
-	     toolbar+= " ";
-	     toolbar+= key;
-	 });
-	 return toolbar;
-     },
+    /* Adds the buttons as toolbar options in addition to the set toolbar buttons ,
+       the toolbar format is |option1 option2 | othergroupoption1 othergroupoption2 |*/
+    _getToolbarOptionsWithButtons: function(toolbar, buttons) {
+      var btnKeys = Object.keys(buttons);
+      toolbar += ' |';
+      btnKeys.forEach(function(key){
+        toolbar += ' ';
+        toolbar += key;
+      });
+      return toolbar;
+    },
 
-     attached: function(){
-	 this.prepareInitEditor();
-     },
+    attached: function(){
+      this.prepareInitEditor();
+    },
 
-     prepareInitEditor: function () {
-	 this.async(function () {
-             this.initEditor();
-	 }.bind(this),100);
-     },
+    prepareInitEditor: function () {
+      this.async(function () {
+        this.initEditor();
+      }, 100);
+    },
 
-     initEditor:function () {
-	 
-	 if (this.baseUrl !== '') {
-             tinymce.baseURL = this.baseUrl;
-	 }
-	 
-	 tinymce.init({
-             selector: "#" + this.textareaid,
-             templates: this.templates,
-             plugins: this.tinyplugins,
-             toolbar: this.toolbarPlusButtons,
-             height: this.height,
-             content_css: this.contentcss,
-             setup: function (ed) {
-		 this.editorid = ed.id;
-		 ed.on('init', function(args) {
-		     this.fire('init');
-		 }.bind(this));
+    initEditor:function () {
+      if (this.baseUrl !== '') {
+        tinyMCE.baseURL = this.baseUrl;
+      }
+   
+      var options = {
+        selector: '#' + this.textareaid,
+        templates: this.templates,
+        plugins: this.tinyplugins,
+        toolbar: this.toolbarPlusButtons,
+        height: this.height,
+        content_css: this.contentcss,
+        setup: function (ed) {
+          this.editorid = ed.id;
+          
+          ed.on('init', function(e) {
+            this.fire('tinymce-init', { event: e });
+          }.bind(this));
 
-		 ed.on('focus', function(e) {
-		     this.fire('focus');
-		 }.bind(this));
+          ed.on('focus', function(e) {
+            this.fire('tinymce-focus', { event: e });
+          }.bind(this));
 
-		 ed.on('NodeChange keyup', function(e) {
-		     var content = tinyMCE.get(ed.id).getContent();
-		     this.fire('change', content);
-		 }.bind(this));
-		 //Add custom buttons to the toolbar
-		 if(Object.keys(this.buttons).length > 0 ) {
-		     var keyBtns = Object.keys(this.buttons);
-		     keyBtns.forEach(function(key){
-			 var btnInfo = this.buttons[key];
-			 ed.addButton(key, btnInfo);
-			 
-		     }.bind(this)); 
-		 }
-             }.bind(this)
-	 });
-     },
+          ed.on('NodeChange keyup', function(e) {
+            this.fire('tinymce-change', { event: e, content: this.getContent() });
+          }.bind(this));
+          
+          //Add custom buttons to the toolbar
+          if (Object.keys(this.buttons).length > 0 ) {
+            var keyBtns = Object.keys(this.buttons);
+            keyBtns.forEach(function(key){
+              var btnInfo = this.buttons[key];
+              ed.addButton(key, btnInfo);
+            }.bind(this)); 
+          }
+        }.bind(this)
+      };
+   
+      if (this.initOptions) {
+        Object.getOwnPropertyNames(this.initOptions).forEach(function (key) {
+          Object.defineProperty(options, key, Object.getOwnPropertyDescriptor(this.initOptions, key));
+        }, this);
+      }
+      tinyMCE.init(options);
+    },
 
-     execCommand:function(command){
-	 tinyMCE.getEditor().execCommand(command);
-     },
-     getEditor: function() {
-	 return tinyMCE.editors[this.editorid];
-     },
-     getContent:function(){
-	 return this.getEditor().getContent();
-     },
+    execCommand:function(command){
+      this.getEditor().execCommand(command);
+    },
+    
+    getEditor: function() {
+      return tinyMCE.editors[this.editorid];
+    },
+    
+    getContent:function(){
+      return this.getEditor().getContent();
+    },
 
-     setContent:function(content){
-	 if (tinyMCE && this.getEditor()){
-             this.getEditor().setContent(content);
-	 }
-	 
-     }
+    setContent:function(content){
+      if (tinyMCE && this.getEditor()){
+        this.getEditor().setContent(content);
+      }
+    }
+  });
 
- });
-
+}());
 </script>
