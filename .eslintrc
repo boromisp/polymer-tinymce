@@ -1,0 +1,57 @@
+{
+  "globals": {
+    "Polymer": false,
+    "tinyMCE": false
+  },
+  "rules": {
+    "indent": [
+      "warn",
+      2
+    ],
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "linebreak-style": [
+      "warn",
+      "unix"
+    ],
+    "semi": [
+      "warn",
+      "always"
+    ],
+    "eqeqeq": "error",
+    "no-console": "warn",
+    "no-loop-func": "error",
+    "guard-for-in": "error",
+    "no-unneeded-ternary": "error",
+    "no-constant-condition": "error",
+    "no-sparse-arrays": "error",
+    "no-empty": "warn",
+    "no-negated-condition": "warn",
+    "no-cond-assign": [
+      "error",
+      "always"
+    ],
+    "yoda": [
+      "error",
+      "never"
+    ],
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "quote-props": [
+      "warn",
+      "as-needed"
+    ]
+  },
+  "env": {
+    "browser": true
+  },
+  "extends": "eslint:recommended"
+}
