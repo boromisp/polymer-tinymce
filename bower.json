@@ -21,12 +21,13 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0",
+    "polymer": "Polymer/polymer#1.9 - 2",
     "tinymce": "^4.4.3"
   },
   "devDependencies": {
     "web-component-tester": "*",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.1"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
+    "paper-button": "PolymerElements/paper-button#^2.0.0",
+    "paper-input": "PolymerElements/paper-input#^2.0.0"
   }
 }
